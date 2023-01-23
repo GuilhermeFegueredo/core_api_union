@@ -1,8 +1,8 @@
 package main
 
 import (
-	"core_APIUnion/config"
-	"core_APIUnion/router"
+	"core_APIUnion/src/config"
+	"core_APIUnion/src/router"
 	"fmt"
 	"log"
 	"net/http"
