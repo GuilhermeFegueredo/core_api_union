@@ -1,7 +1,7 @@
 package db
 
 import (
-	"core_APIUnion/config"
+	"core_APIUnion/src/config"
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql" // Driver
