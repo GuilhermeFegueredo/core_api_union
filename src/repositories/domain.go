@@ -4,6 +4,7 @@ import (
 	"core_APIUnion/src/models"
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -38,4 +39,23 @@ func (repository Domain) GetDomainByName(name string) ([]models.Domain, error) {
 	}
 
 	return domains, nil
+}
+
+func (repository Domain) GetDomainByID(ID uint64) (models.Domain, error) {
+	stmt, err := repository.db.Prepare("SELECT domain_value FROM tblDomain WHERE domain_id = ?")
+	if err != nil {
+		return models.Domain{}, err
+	}
+
+	defer stmt.Close()
+
+	d := models.Domain{}
+
+	err = stmt.QueryRow(ID).Scan(&d.Domain_value)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	return d, nil
+
 }
