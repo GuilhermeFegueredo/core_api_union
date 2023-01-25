@@ -1,6 +1,9 @@
 package rotas
 
-import "net/http"
+import (
+	"core_APIUnion/src/controllers"
+	"net/http"
+)
 
 var routerCostumer = []Routes{
 	{
@@ -9,13 +12,13 @@ var routerCostumer = []Routes{
 		Function:        controllers.GetCostumers,
 		IsAuthenticated: false,
 	},
-	/*{
+	{
 		URI:             "/costumer/{NAME}",
 		Method:          http.MethodGet,
 		Function:        controllers.GetCostumerByName,
 		IsAuthenticated: false,
 	},
-	{
+	/*{
 		URI:             "/costumer/{ID}",
 		Method:          http.MethodGet,
 		Function:        controllers.GetCostumerByID,
