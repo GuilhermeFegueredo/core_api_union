@@ -39,3 +39,23 @@ func (repository Tags) GetTags() ([]models.Tag, error) {
 	return tags, nil
 
 }
+
+func (repository Tags) CreateTag(tag models.Tag) (uint64, error) {
+	stmt, err := repository.db.Prepare("INSERT INTO tblTags (tag_name, tag_type) VALUES(?, ?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+
+	tagResp, err := stmt.Exec(tag.Tag_Name, tag.Domain_ID)
+	if err != nil {
+		return 0, err
+	}
+
+	LastInsertId, err := tagResp.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return uint64(LastInsertId), nil
+}
