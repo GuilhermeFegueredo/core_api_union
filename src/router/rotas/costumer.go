@@ -1,6 +1,9 @@
 package rotas
 
-import "net/http"
+import (
+	"core_APIUnion/src/controllers"
+	"net/http"
+)
 
 var routerCostumer = []Routes{
 	{
