@@ -33,7 +33,7 @@ func GetCostumers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-func CreateCostumers(w http.ResponseWriter, r *http.Request) {
+func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, erro := ioutil.ReadAll(r.Body)
 	if erro != nil {
 		response.Erro(w, http.StatusUnprocessableEntity, erro)
@@ -60,7 +60,7 @@ func CreateCostumers(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByCostumer(db)
-	costumer.Costumer_ID, erro = repository.CreateCostumers(costumer)
+	costumer.Costumer_ID, erro = repository.CreateCostumer(costumer)
 	if erro != nil {
 		response.Erro(w, http.StatusInternalServerError, erro)
 		return
