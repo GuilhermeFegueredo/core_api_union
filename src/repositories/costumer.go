@@ -28,7 +28,7 @@ func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
 	for lines.Next() {
 		var costumer models.Costumer
 
-		if err = lines.Scan(&costumer.Costumer_ID, &costumer.Costumer_name, &costumer.Status_ID); err != nil {
+		if err = lines.Scan(&costumer.Costumer_ID, &costumer.Costumer_name, &costumer.Description); err != nil {
 			log.Fatal("Error scanning costumer ", err) // Aqui entrará o sistema de respostas
 			return nil, err
 		}
