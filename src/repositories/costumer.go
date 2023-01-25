@@ -39,3 +39,26 @@ func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
 	return costumers, nil
 
 }
+
+func (repository Costumers) CreateCostumers(costumer models.Costumer) (uint64, error) {
+	statement, erro := repository.db.Prepare(
+		"insert into tblCostumer (costumer_name, status_id) values(?, ?)",
+	)
+	if erro != nil {
+		return 0, erro
+	}
+	defer statement.Close()
+
+	result, erro := statement.Exec(costumer.Costumer_name, 1)
+	if erro != nil {
+		return 0, erro
+	}
+
+	LastInsertId, erro := result.LastInsertId()
+	if erro != nil {
+		return 0, erro
+	}
+
+	return uint64(LastInsertId), nil
+
+}
