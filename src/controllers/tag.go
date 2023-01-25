@@ -37,7 +37,6 @@ func GetTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func GetTag(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
@@ -73,17 +72,23 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 	var tag models.Tag
 	if err = json.Unmarshal(bodyRequest, &tag); err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
-  }
-  
-  db, err := db.Conectar()
+	}
+
+	err = tag.Prepare()
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db.Conectar()
 	if err != nil {
 		w.Write([]byte("Error connecting to database"))
 		// Aqui entrará o sistema de respostas
 		return
 	}
 	defer db.Close()
-  
-  repository := repositories.NewRepositoryByTag(db)
+
+	repository := repositories.NewRepositoryByTag(db)
 	tag.Tag_ID, err = repository.CreateTag(tag)
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
