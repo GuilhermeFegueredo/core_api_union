@@ -12,4 +12,10 @@ var routerDomain = []Routes{
 		Function:        controllers.GetDomainByName,
 		IsAuthenticated: false,
 	},
+	{
+		URI:             "/domain",
+		Method:          http.MethodPost,
+		Function:        controllers.CreateDomain,
+		IsAuthenticated: false,
+	},
 }
