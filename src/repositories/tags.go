@@ -40,6 +40,7 @@ func (repository Tags) GetTags() ([]models.Tag, error) {
 
 }
 
+
 func (repository Tags) GetTag(ID uint64) (models.Tag, error) {
 
 	stmt, err := repository.db.Prepare("SELECT T.tag_id, T.tag_name, D.domain_value FROM tblTags T INNER JOIN tblDomain D ON T.tag_type = D.domain_id WHERE T.tag_id = ?")
@@ -58,4 +59,24 @@ func (repository Tags) GetTag(ID uint64) (models.Tag, error) {
 	}
 
 	return tag, nil
+}
+
+func (repository Tags) CreateTag(tag models.Tag) (uint64, error) {
+	stmt, err := repository.db.Prepare("INSERT INTO tblTags (tag_name, tag_type) VALUES(?, ?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+
+	tagResp, err := stmt.Exec(tag.Tag_Name, tag.Domain_ID)
+	if err != nil {
+		return 0, err
+	}
+
+	LastInsertId, err := tagResp.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return uint64(LastInsertId), nil
 }

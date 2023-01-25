@@ -18,12 +18,12 @@ var routerTags = []Routes{
 		Function:        controllers.GetTag,
 		IsAuthenticated: false,
 	},
-	// {
-	// 	URI:             "/tags",
-	// 	Method:          http.MethodPost,
-	// 	Function:        controllers.CreateTag,
-	// 	IsAuthenticated: false,
-	// },
+	{
+		URI:             "/tags",
+		Method:          http.MethodPost,
+		Function:        controllers.CreateTag,
+		IsAuthenticated: false,
+	},
 	// {
 	// 	URI:             "/tags",
 	// 	Method:          http.MethodPut,

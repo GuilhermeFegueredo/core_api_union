@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"core_APIUnion/src/db"
+	"core_APIUnion/src/models"
 	"core_APIUnion/src/repositories"
 	"core_APIUnion/src/response"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -35,6 +37,7 @@ func GetTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
 func GetTag(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
@@ -47,6 +50,7 @@ func GetTag(w http.ResponseWriter, r *http.Request) {
 	db, err := db.Conectar()
 	if err != nil {
 		w.Write([]byte("Error connecting to database"))
+		// Aqui entrará o sistema de respostas
 		return
 	}
 	defer db.Close()
@@ -58,4 +62,33 @@ func GetTag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, http.StatusOK, tag)
+}
+
+func CreateTag(w http.ResponseWriter, r *http.Request) {
+	bodyRequest, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, err)
+	}
+
+	var tag models.Tag
+	if err = json.Unmarshal(bodyRequest, &tag); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+  }
+  
+  db, err := db.Conectar()
+	if err != nil {
+		w.Write([]byte("Error connecting to database"))
+		// Aqui entrará o sistema de respostas
+		return
+	}
+	defer db.Close()
+  
+  repository := repositories.NewRepositoryByTag(db)
+	tag.Tag_ID, err = repository.CreateTag(tag)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+	}
+
+	response.JSON(w, http.StatusCreated, tag)
+
 }

@@ -59,3 +59,27 @@ func (repository Domain) GetDomainByID(ID uint64) (models.Domain, error) {
 	return d, nil
 
 }
+
+// Criar insere um usuário no banco de dados
+func (repository Domain) CreateDomain(domain models.Domain) (uint64, error) {
+	statement, erro := repository.db.Prepare(
+		"insert into tblDomain (domain_name, domain_code, domain_value) values(?, ?, ?)",
+	)
+	if erro != nil {
+		return 0, erro
+	}
+	defer statement.Close()
+
+	result, erro := statement.Exec(domain.Domain_name, domain.Domain_code, domain.Domain_value)
+	if erro != nil {
+		return 0, erro
+	}
+
+	LastInsertId, erro := result.LastInsertId()
+	if erro != nil {
+		return 0, erro
+	}
+
+	return uint64(LastInsertId), nil
+
+}
