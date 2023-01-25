@@ -6,9 +6,13 @@ import (
 	"core_APIUnion/src/repositories"
 	"core_APIUnion/src/response"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func GetCostumers(w http.ResponseWriter, r *http.Request) {
@@ -33,6 +37,58 @@ func GetCostumers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
+	db, err := db.Conectar()
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByCostumer(db)
+	costumer, err := repository.GetCostumerByName(r.URL.Query().Get("name"))
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if costumer == nil {
+		response.Erro(w, http.StatusNotFound, errors.New("Costumer not found"))
+		return
+
+	}
+
+	response.JSON(w, http.StatusOK, costumer)
+}
+
+func GetCostumerByID(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	costumer_id, err := strconv.ParseUint(parameters["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db.Conectar()
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByCostumer(db)
+	costumer, err := repository.GetCostumerByID(costumer_id)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, costumer)
+}
+
 func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, erro := ioutil.ReadAll(r.Body)
 	if erro != nil {

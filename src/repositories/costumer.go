@@ -3,7 +3,9 @@ package repositories
 import (
 	"core_APIUnion/src/models"
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 )
 
 type Costumers struct {
@@ -38,6 +40,49 @@ func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
 
 	return costumers, nil
 
+}
+
+func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, error) {
+	Costumername := strings.ToUpper(fmt.Sprintf("%%%s%%", name))
+
+	lines, err := repository.db.Query("SELECT costumer_id, costumer_name FROM tblCostumer WHERE costumer_name LIKE ?", Costumername)
+	if err != nil {
+		return nil, err
+	}
+
+	defer lines.Close()
+
+	var costumers []models.Costumer
+
+	for lines.Next() {
+		var costumer models.Costumer
+
+		if err = lines.Scan(&costumer.Costumer_ID, &costumer.Costumer_name); err != nil {
+			return nil, err
+		}
+
+		costumers = append(costumers, costumer)
+	}
+
+	return costumers, nil
+}
+
+func (repository Costumers) GetCostumerByID(id uint64) (models.Costumer, error) {
+
+	stmt, err := repository.db.Prepare("SELECT * FROM tblCostumer WHERE costumer_id = ? ")
+	if err != nil {
+		return models.Costumer{}, err
+	}
+	defer stmt.Close()
+
+	var costumer models.Costumer
+	err = stmt.QueryRow(id).Scan(&costumer.Costumer_ID, &costumer.Costumer_name, &costumer.Description)
+
+	if err != nil {
+		return models.Costumer{}, err
+	}
+
+	return costumer, nil
 }
 
 func (repository Costumers) CreateCostumer(costumer models.Costumer) (uint64, error) {
