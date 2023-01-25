@@ -74,6 +74,12 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 		response.Erro(w, http.StatusBadRequest, err)
 	}
 
+	err = tag.Prepare()
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
 	db, err := db.Conectar()
 	if err != nil {
 		w.Write([]byte("Error connecting to database"))
