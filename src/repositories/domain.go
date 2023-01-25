@@ -83,3 +83,20 @@ func (repository Domain) CreateDomain(domain models.Domain) (uint64, error) {
 	return uint64(LastInsertId), nil
 
 }
+
+// UpdateDomain atualiza as informações de um domain no banco de dados
+func (repository Domain) UpdateDomain(ID uint64, domain models.Domain) error {
+	statement, erro := repository.db.Prepare(
+		"update tblDomain set domain_name = ?, domain_value = ?, domain_code = ? where domain_id = ?",
+	)
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(domain.Domain_name, domain.Domain_value, domain.Domain_code, ID); erro != nil {
+		return erro
+	}
+
+	return nil
+}
