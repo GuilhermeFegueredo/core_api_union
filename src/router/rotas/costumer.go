@@ -40,6 +40,6 @@ var routerCostumer = []Routes{
 		URI:             "/costumer/{ID}",
 		Method:          http.MethodDelete,
 		Function:        controllers.DeleteCostumer,
-		IsAuthenticated: false,
+		IsAuthenticated: fale,
 	},*/
 }
