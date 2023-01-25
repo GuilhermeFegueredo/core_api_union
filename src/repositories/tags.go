@@ -40,12 +40,10 @@ func (repository Tags) GetTags() ([]models.Tag, error) {
 
 }
 
-
 func (repository Tags) GetTag(ID uint64) (models.Tag, error) {
 
 	stmt, err := repository.db.Prepare("SELECT T.tag_id, T.tag_name, D.domain_value FROM tblTags T INNER JOIN tblDomain D ON T.tag_type = D.domain_id WHERE T.tag_id = ?")
 	if err != nil {
-		log.Fatal("Error fetching tags")
 		return models.Tag{}, err
 	}
 
@@ -54,7 +52,6 @@ func (repository Tags) GetTag(ID uint64) (models.Tag, error) {
 
 	err = stmt.QueryRow(ID).Scan(&tag.Tag_ID, &tag.Tag_Name, &tag.Domain_value)
 	if err != nil {
-		log.Fatal("Error scan row")
 		return models.Tag{}, err
 	}
 
@@ -79,4 +76,19 @@ func (repository Tags) CreateTag(tag models.Tag) (uint64, error) {
 	}
 
 	return uint64(LastInsertId), nil
+}
+
+func (repository Tags) DeleteTag(ID uint64) error {
+	stmt, err := repository.db.Prepare("DELETE FROM tblTags WHERE tag_id = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

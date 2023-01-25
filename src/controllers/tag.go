@@ -42,14 +42,13 @@ func GetTag(w http.ResponseWriter, r *http.Request) {
 
 	ID, err := strconv.ParseUint(parameters["ID"], 10, 32)
 	if err != nil {
-		w.Write([]byte("Error to convert parameter to int"))
+		response.Erro(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
 	db, err := db.Conectar()
 	if err != nil {
-		w.Write([]byte("Error connecting to database"))
-		// Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 	defer db.Close()
@@ -57,7 +56,8 @@ func GetTag(w http.ResponseWriter, r *http.Request) {
 	repository := repositories.NewRepositoryByTag(db)
 	tag, err := repository.GetTag(ID)
 	if err != nil {
-		w.Write([]byte("Error"))
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	response.JSON(w, http.StatusOK, tag)
@@ -96,4 +96,30 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, http.StatusCreated, tag)
 
+}
+
+func DeleteTag(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	ID, err := strconv.ParseUint(parameters["ID"], 10, 32)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db.Conectar()
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByTag(db)
+	err = repository.DeleteTag(ID)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, map[string]string{"message": "Tag deleted successfully"})
 }

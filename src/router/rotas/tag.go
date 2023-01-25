@@ -30,10 +30,10 @@ var routerTags = []Routes{
 	// 	Function:        controllers.UpdateTag,
 	// 	IsAuthenticated: false,
 	// },
-	// {
-	// 	URI:             "/tags",
-	// 	Method:          http.MethodDelete,
-	// 	Function:        controllers.DeleteTag,
-	// 	IsAuthenticated: false,
-	// },
+	{
+		URI:             "/tags/{ID}",
+		Method:          http.MethodDelete,
+		Function:        controllers.DeleteTag,
+		IsAuthenticated: false,
+	},
 }
