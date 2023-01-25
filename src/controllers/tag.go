@@ -9,6 +9,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func GetTags(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +37,33 @@ func GetTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
+func GetTag(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	ID, err := strconv.ParseUint(parameters["ID"], 10, 32)
+	if err != nil {
+		w.Write([]byte("Error to convert parameter to int"))
+		return
+	}
+
+	db, err := db.Conectar()
+	if err != nil {
+		w.Write([]byte("Error connecting to database"))
+		// Aqui entrará o sistema de respostas
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByTag(db)
+	tag, err := repository.GetTag(ID)
+	if err != nil {
+		w.Write([]byte("Error"))
+	}
+
+	response.JSON(w, http.StatusOK, tag)
+}
+
 func CreateTag(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -43,17 +73,17 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 	var tag models.Tag
 	if err = json.Unmarshal(bodyRequest, &tag); err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
-	}
-
-	db, err := db.Conectar()
+  }
+  
+  db, err := db.Conectar()
 	if err != nil {
-		log.Fatal("Erro connecting to database") // Aqui entrará o sistema de respostas
+		w.Write([]byte("Error connecting to database"))
+		// Aqui entrará o sistema de respostas
 		return
 	}
 	defer db.Close()
-
-	repository := repositories.NewRepositoryByTag(db)
-
+  
+  repository := repositories.NewRepositoryByTag(db)
 	tag.Tag_ID, err = repository.CreateTag(tag)
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)

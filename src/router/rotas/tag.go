@@ -12,12 +12,12 @@ var routerTags = []Routes{
 		Function:        controllers.GetTags,
 		IsAuthenticated: false,
 	},
-	// {
-	// 	URI:             "/tags/{ID}",
-	// 	Method:          http.MethodGet,
-	// 	Function:        controllers.GetTag,
-	// 	IsAuthenticated: false,
-	// },
+	{
+		URI:             "/tags/{ID}",
+		Method:          http.MethodGet,
+		Function:        controllers.GetTag,
+		IsAuthenticated: false,
+	},
 	{
 		URI:             "/tags",
 		Method:          http.MethodPost,
