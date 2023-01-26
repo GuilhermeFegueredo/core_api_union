@@ -70,5 +70,4 @@ func (user *User) format(stage string) error {
 	}
 
 	return nil
-
 }
