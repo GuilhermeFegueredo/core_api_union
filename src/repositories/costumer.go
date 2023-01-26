@@ -16,7 +16,7 @@ func NewRepositoryByCostumer(db *sql.DB) *Costumers {
 }
 
 func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
-	lines, err := repository.db.Query("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id")
+	lines, err := repository.db.Query("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE C.status_id = 1")
 	if err != nil {
 		log.Fatal("Error selecting costumers") // Aqui entrará o sistema de respostas
 		return nil, err
@@ -38,11 +38,10 @@ func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
 	}
 
 	return costumers, nil
-
 }
 
 func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, error) {
-	text := "%'"
+	text := "%' AND C.status_id = 1"
 	query := fmt.Sprint("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE C.costumer_name LIKE '%", name, text)
 
 	lines, err := repository.db.Query(query)
@@ -73,7 +72,7 @@ func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, e
 
 func (repository Costumers) GetCostumerByID(id uint64) (models.Costumer, error) {
 
-	stmt, err := repository.db.Prepare("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE costumer_id = ?")
+	stmt, err := repository.db.Prepare("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE costumer_id = ? AND C.status_id = 1")
 	if err != nil {
 		return models.Costumer{}, err
 	}
@@ -113,12 +112,12 @@ func (repository Costumers) CreateCostumer(costumer models.Costumer) (uint64, er
 
 func (repository Costumers) UpdateCostumer(id uint64, costumer models.Costumer) (models.Costumer, error) {
 	stmt, err := repository.db.Prepare(
-		"UPDATE tblCostumer SET costumer_name = ? WHERE costumer_id = ?")
+		"UPDATE tblCostumer SET costumer_name = ?, status_id = ? WHERE costumer_id = ?")
 	if err != nil {
 		return models.Costumer{}, err
 	}
 
-	if _, err = stmt.Exec(costumer.Costumer_name, id); err != nil {
+	if _, err = stmt.Exec(costumer.Costumer_name, costumer.Status_ID, id); err != nil {
 		return models.Costumer{}, err
 	}
 

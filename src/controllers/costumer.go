@@ -37,6 +37,7 @@ func GetCostumers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
 func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
 	costumerName := parametros["name"]
@@ -173,7 +174,6 @@ func UpdateCostumer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, http.StatusOK, costumer)
-
 }
 
 func DeleteCostumer(w http.ResponseWriter, r *http.Request) {
