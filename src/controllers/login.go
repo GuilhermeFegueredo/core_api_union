@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"core_APIUnion/src/auth"
 	"core_APIUnion/src/db"
 	"core_APIUnion/src/models"
 	"core_APIUnion/src/repositories"
@@ -44,5 +45,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSON(w, http.StatusAccepted, "Login Successful!")
+	token, _ := auth.NewToken(userFromDB.ID)
+	response.JSON(w, http.StatusAccepted, token)
 }
