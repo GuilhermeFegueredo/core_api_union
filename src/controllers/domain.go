@@ -77,8 +77,8 @@ func CreateDomain(w http.ResponseWriter, r *http.Request) {
 
 // UpdateDomain altera as informações de um domain no banco
 func UpdateDomain(w http.ResponseWriter, r *http.Request) {
-	parametros := mux.Vars(r)
-	domain_ID, erro := strconv.ParseUint(parametros["domain_id"], 10, 64)
+	parameters := mux.Vars(r)
+	domain_ID, erro := strconv.ParseUint(parameters["domain_id"], 10, 64)
 	if erro != nil {
 		response.Erro(w, http.StatusBadRequest, erro)
 		return
@@ -117,4 +117,28 @@ func UpdateDomain(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, http.StatusOK, domain)
 
+}
+
+func DeleteDomain(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	domain_ID, erro := strconv.ParseUint(parameters["domain_id"], 10, 64)
+	if erro != nil {
+		response.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := db.Conectar()
+	if erro != nil {
+		response.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByDomain(db)
+	if erro = repository.DeleteDomain(domain_ID); erro != nil {
+		response.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	response.JSONmessage(w, http.StatusOK, "domain successfully deleted")
 }

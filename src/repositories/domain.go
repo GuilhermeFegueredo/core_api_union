@@ -100,3 +100,18 @@ func (repository Domain) UpdateDomain(ID uint64, domain models.Domain) error {
 
 	return nil
 }
+
+// DeleteDomain exclui as informações de um domain no banco de dados
+func (repository Domain) DeleteDomain(ID uint64) error {
+	statement, erro := repository.db.Prepare("delete from tblDomain where domain_id = ?")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(ID); erro != nil {
+		return erro
+	}
+
+	return nil
+}
