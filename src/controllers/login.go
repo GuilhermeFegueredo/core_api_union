@@ -39,7 +39,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = security.VerificarSenha(userFromDB.Password, user.Password)
+	err = security.ValidatePassword(userFromDB.Password, user.Password)
 	if err != nil {
 		response.Erro(w, http.StatusUnauthorized, err)
 		return
