@@ -5,15 +5,15 @@ import (
 	"database/sql"
 )
 
-type Usuarios struct {
+type Users struct {
 	db *sql.DB
 }
 
-func NewRepositoryByUser(db *sql.DB) *Usuarios {
-	return &Usuarios{db}
+func NewRepositoryByUser(db *sql.DB) *Users {
+	return &Users{db}
 }
 
-func (repo Usuarios) GetUserByEmail(email string) (models.User, error) {
+func (repo Users) GetUserByEmail(email string) (models.User, error) {
 	linha, err := repo.db.Query("select user_id, user_pwd from tblUser where user_email = ?", email)
 	if err != nil {
 		return models.User{}, err
@@ -23,7 +23,7 @@ func (repo Usuarios) GetUserByEmail(email string) (models.User, error) {
 	var usuario models.User
 
 	if linha.Next() {
-		err = linha.Scan(&usuario.ID, &usuario.Password)
+		err = linha.Scan(&usuario.User_ID, &usuario.Password)
 		if err != nil {
 			return models.User{}, err
 		}

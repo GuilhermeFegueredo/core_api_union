@@ -3,7 +3,7 @@ package security
 import "golang.org/x/crypto/bcrypt"
 
 // Hash recebe uma senha e retorna um hash dela
-func Hash(password string) ([]byte, error) {
+func HashPassword(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
