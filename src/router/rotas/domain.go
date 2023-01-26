@@ -24,4 +24,10 @@ var routerDomain = []Routes{
 		Function:        controllers.UpdateDomain,
 		IsAuthenticated: false,
 	},
+	{
+		URI:             "/domain/{domain_id}",
+		Method:          http.MethodDelete,
+		Function:        controllers.DeleteDomain,
+		IsAuthenticated: false,
+	},
 }
