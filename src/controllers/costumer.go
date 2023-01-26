@@ -132,3 +132,30 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, http.StatusOK, costumer)
 }
+
+func DeleteCostumer(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	costumer_id, err := strconv.ParseUint(parameters["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db.Conectar()
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByCostumer(db)
+	costumer, err := repository.DeleteCostumer(costumer_id)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, costumer)
+}

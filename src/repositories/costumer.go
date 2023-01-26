@@ -109,5 +109,32 @@ func (repository Costumers) CreateCostumer(costumer models.Costumer) (uint64, er
 	}
 
 	return uint64(LastInsertId), nil
+}
 
+func (repository Costumers) DeleteCostumer(id uint64) (models.Costumer, error) {
+
+	stmt, err := repository.db.Prepare(
+		"UPDATE tblCostumer SET status_id = 2 WHERE costumer_id = ?")
+	if err != nil {
+		return models.Costumer{}, err
+	}
+
+	if _, err = stmt.Exec(id); err != nil {
+		return models.Costumer{}, err
+	}
+
+	stmt, err = repository.db.Prepare("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE costumer_id = ?")
+	if err != nil {
+		return models.Costumer{}, err
+	}
+	defer stmt.Close()
+
+	var costumer models.Costumer
+	err = stmt.QueryRow(id).Scan(&costumer.Costumer_ID, &costumer.Costumer_name, &costumer.Description)
+
+	if err != nil {
+		return models.Costumer{}, err
+	}
+
+	return costumer, nil
 }
