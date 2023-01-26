@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetStatusById é uma função que recupera um status por seu ID do banco de dados.
 func GetStatusById(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
