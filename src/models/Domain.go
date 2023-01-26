@@ -14,6 +14,7 @@ type Domain struct {
 
 func (domain *Domain) format() error {
 	domain.Domain_name = strings.TrimSpace(domain.Domain_name)
+	domain.Domain_name = strings.ToUpper(domain.Domain_name)
 	domain.Domain_value = strings.TrimSpace(domain.Domain_value)
 
 	return nil
@@ -21,11 +22,11 @@ func (domain *Domain) format() error {
 
 func (domain *Domain) validate() error {
 	if domain.Domain_name == "" {
-		return errors.New("The name is mandatory and cannot be blank")
+		return errors.New("the name is mandatory and cannot be blank")
 	}
 
 	if domain.Domain_value == "" {
-		return errors.New("The value is mandatory and cannot be blank")
+		return errors.New("the value is mandatory and cannot be blank")
 	}
 
 	return nil

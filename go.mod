@@ -7,3 +7,5 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.4.0
 )
+
+require golang.org/x/crypto v0.5.0

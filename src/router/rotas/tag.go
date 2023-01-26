@@ -12,28 +12,28 @@ var routerTags = []Routes{
 		Function:        controllers.GetTags,
 		IsAuthenticated: false,
 	},
-	// {
-	// 	URI:             "/tags/{ID}",
-	// 	Method:          http.MethodGet,
-	// 	Function:        controllers.GetTag,
-	// 	IsAuthenticated: false,
-	// },
-	// {
-	// 	URI:             "/tags",
-	// 	Method:          http.MethodPost,
-	// 	Function:        controllers.CreateTag,
-	// 	IsAuthenticated: false,
-	// },
+	{
+		URI:             "/tags/{ID}",
+		Method:          http.MethodGet,
+		Function:        controllers.GetTag,
+		IsAuthenticated: false,
+	},
+	{
+		URI:             "/tags",
+		Method:          http.MethodPost,
+		Function:        controllers.CreateTag,
+		IsAuthenticated: false,
+	},
 	// {
 	// 	URI:             "/tags",
 	// 	Method:          http.MethodPut,
 	// 	Function:        controllers.UpdateTag,
 	// 	IsAuthenticated: false,
 	// },
-	// {
-	// 	URI:             "/tags",
-	// 	Method:          http.MethodDelete,
-	// 	Function:        controllers.DeleteTag,
-	// 	IsAuthenticated: false,
-	// },
+	{
+		URI:             "/tags/{ID}",
+		Method:          http.MethodDelete,
+		Function:        controllers.DeleteTag,
+		IsAuthenticated: false,
+	},
 }

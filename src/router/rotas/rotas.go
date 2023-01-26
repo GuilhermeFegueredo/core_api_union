@@ -20,6 +20,8 @@ func Configurar(r *mux.Router) *mux.Router {
 	routers = append(routers, routerDomain...)
 	routers = append(routers, routerStatus...)
 	routers = append(routers, routerCostumer...)
+	routers = append(routers, RouterUser...)
+
 
 	for _, router := range routers {
 		r.HandleFunc(router.URI, router.Function).Methods(router.Method)
