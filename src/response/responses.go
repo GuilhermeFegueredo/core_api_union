@@ -25,3 +25,11 @@ func Erro(w http.ResponseWriter, statusCode int, erro error) {
 		Erro: erro.Error(),
 	})
 }
+
+func JSONmessage(w http.ResponseWriter, statusCode int, message string) {
+	JSON(w, statusCode, struct {
+		Message string `json:"message"`
+	}{
+		Message: message,
+	})
+}
