@@ -30,12 +30,12 @@ var routerCostumer = []Routes{
 		Function:        controllers.CreateCostumer,
 		IsAuthenticated: false,
 	},
-	/*{
-		URI:             "/costumer/{id}",
+	{
+		URI:             "/costumer/update/{id}",
 		Method:          http.MethodPut,
 		Function:        controllers.UpdateCostumer,
 		IsAuthenticated: false,
-	},*/
+	},
 	{
 		URI:             "/costumer/delete/{id}",
 		Method:          http.MethodPut,

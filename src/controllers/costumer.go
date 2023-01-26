@@ -133,6 +133,49 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, costumer)
 }
 
+func UpdateCostumer(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	costumer_id, erro := strconv.ParseUint(parametros["id"], 10, 64)
+	if erro != nil {
+		response.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	bodyRequest, erro := ioutil.ReadAll(r.Body)
+	if erro != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+
+	var costumer models.Costumer
+	if erro = json.Unmarshal(bodyRequest, &costumer); erro != nil {
+		response.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if erro = costumer.Prepare(); erro != nil {
+		response.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := db.Conectar()
+	if erro != nil {
+		response.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByCostumer(db)
+	costumer, erro = repository.UpdateCostumer(costumer_id, costumer)
+	if erro != nil {
+		response.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, costumer)
+
+}
+
 func DeleteCostumer(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
