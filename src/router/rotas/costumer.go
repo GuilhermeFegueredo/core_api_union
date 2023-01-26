@@ -12,21 +12,18 @@ var routerCostumer = []Routes{
 		Function:        controllers.GetCostumers,
 		IsAuthenticated: false,
 	},
-
 	{
-		URI:             "/costumer/{name}",
+		URI:             "/costumer/name/{name}",
 		Method:          http.MethodGet,
 		Function:        controllers.GetCostumerByName,
 		IsAuthenticated: false,
 	},
-	/*
-		{
-			URI:             "/costumer/{id}",
-			Method:          http.MethodGet,
-			Function:        controllers.GetCostumerByID,
-			IsAuthenticated: false,
-		},
-	*/
+	{
+		URI:             "/costumer/id/{id}",
+		Method:          http.MethodGet,
+		Function:        controllers.GetCostumerByID,
+		IsAuthenticated: false,
+	},
 	{
 		URI:             "/costumer",
 		Method:          http.MethodPost,

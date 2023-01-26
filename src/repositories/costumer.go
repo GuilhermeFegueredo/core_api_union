@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strings"
 )
 
 type Costumers struct {
@@ -43,9 +42,10 @@ func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
 }
 
 func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, error) {
-	Costumername := strings.ToUpper(fmt.Sprintf("%%%s%%", name))
+	text := "%'"
+	query := fmt.Sprint("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE C.costumer_name LIKE '%", name, text)
 
-	lines, err := repository.db.Query("SELECT costumer_id, costumer_name FROM tblCostumer WHERE costumer_name LIKE ?", Costumername)
+	lines, err := repository.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,11 @@ func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, e
 	for lines.Next() {
 		var costumer models.Costumer
 
-		if err = lines.Scan(&costumer.Costumer_ID, &costumer.Costumer_name); err != nil {
+		if err = lines.Scan(
+			&costumer.Costumer_ID,
+			&costumer.Costumer_name,
+			&costumer.Description,
+		); err != nil {
 			return nil, err
 		}
 
@@ -69,7 +73,7 @@ func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, e
 
 func (repository Costumers) GetCostumerByID(id uint64) (models.Costumer, error) {
 
-	stmt, err := repository.db.Prepare("SELECT * FROM tblCostumer WHERE costumer_id = ? ")
+	stmt, err := repository.db.Prepare("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE costumer_id = ?")
 	if err != nil {
 		return models.Costumer{}, err
 	}
@@ -87,7 +91,7 @@ func (repository Costumers) GetCostumerByID(id uint64) (models.Costumer, error) 
 
 func (repository Costumers) CreateCostumer(costumer models.Costumer) (uint64, error) {
 	statement, erro := repository.db.Prepare(
-		"insert into tblCostumer (costumer_name, status_id) values(?, 1)",
+		"INSERT INTO tblCostumer (costumer_name, status_id) VALUES (?, 1)",
 	)
 	if erro != nil {
 		return 0, erro

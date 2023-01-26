@@ -38,6 +38,9 @@ func GetCostumers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	costumerName := parametros["name"]
+
 	db, err := db.Conectar()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
@@ -47,7 +50,7 @@ func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByCostumer(db)
-	costumer, err := repository.GetCostumerByName(r.URL.Query().Get("name"))
+	costumer, err := repository.GetCostumerByName(costumerName)
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -56,7 +59,6 @@ func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
 	if costumer == nil {
 		response.Erro(w, http.StatusNotFound, errors.New("Costumer not found"))
 		return
-
 	}
 
 	response.JSON(w, http.StatusOK, costumer)
@@ -119,6 +121,12 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 	costumer.Costumer_ID, erro = repository.CreateCostumer(costumer)
 	if erro != nil {
 		response.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	costumer, erro = repository.GetCostumerByID(costumer.Costumer_ID)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
