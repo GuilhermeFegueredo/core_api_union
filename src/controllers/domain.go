@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetDomains puxa todos os domains por nome requerido
 func GetDomainByName(w http.ResponseWriter, r *http.Request) {
 	db, err := db.Connect()
 	if err != nil {
@@ -39,6 +40,7 @@ func GetDomainByName(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, domain)
 }
 
+// CreateDomain cria um novo domain
 func CreateDomain(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -119,6 +121,7 @@ func UpdateDomain(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// DeleteDomain deleta um domain do banco
 func DeleteDomain(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	domain_ID, err := strconv.ParseUint(parameters["id"], 10, 64)

@@ -10,3 +10,5 @@ require (
 )
 
 require golang.org/x/crypto v0.5.0
+
+require github.com/badoux/checkmail v1.2.1

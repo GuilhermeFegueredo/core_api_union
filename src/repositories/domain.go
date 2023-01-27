@@ -12,10 +12,12 @@ type Domain struct {
 	db *sql.DB
 }
 
+
 // NewRepositoryByDomain - cria novo repositorio do banco de dados
 func NewRepositoryByDomain(db *sql.DB) *Domain {
 	return &Domain{db}
 }
+
 
 // GetDomainByName - lista domain por nome do banco de dados
 func (repository Domain) GetDomainByName(name string) ([]models.Domain, error) {
@@ -42,6 +44,7 @@ func (repository Domain) GetDomainByName(name string) ([]models.Domain, error) {
 
 	return domains, nil
 }
+
 
 // GetCostumers - busca domain por id do banco de dados
 func (repository Domain) GetDomainByID(ID uint64) (models.Domain, error) {
