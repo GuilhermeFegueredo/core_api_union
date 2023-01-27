@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// CreateUser cria um novo Usuario
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -48,6 +49,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// GetUsers puxa todos os usuarios
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	owner := strings.ToLower(r.URL.Query().Get("owner"))
 
@@ -68,6 +70,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, users)
 }
 
+// GetUser puxa um usuario por id
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
@@ -94,6 +97,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, user)
 }
 
+// UpdateUser atualiza um usuario por id
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
@@ -132,9 +136,10 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSONMessage(w, http.StatusNoContent, "user updated successfully")
+	response.JSONMessage(w, http.StatusOK, "user updated successfully")
 }
 
+// DeleteUser deleta um usuario por id
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
@@ -156,5 +161,5 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSON(w, http.StatusNoContent, "user deleted successfully")
+	response.JSON(w, http.StatusOK, "user deleted successfully")
 }
