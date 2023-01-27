@@ -31,7 +31,11 @@ func (costumer *Costumer) format() error {
 
 func (costumer *Costumer) validate() error {
 	if costumer.Costumer_name == "" {
-		return errors.New("The name is mandatory and cannot be blank")
+		return errors.New("the name is mandatory and cannot be blank")
+	}
+
+	if costumer.Status_ID < 3 || costumer.Status_ID > 4 {
+		return errors.New("invalid status for customer")
 	}
 
 	return nil
