@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetTags - Busca todas as tags
 func GetTags(w http.ResponseWriter, r *http.Request) {
 	db, err := db.Connect()
 	if err != nil {
@@ -36,6 +37,7 @@ func GetTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetTag - busca uma tag em específico
 func GetTag(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
@@ -62,6 +64,7 @@ func GetTag(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, tag)
 }
 
+// CreateTag - cria uma nova tag
 func CreateTag(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -96,6 +99,7 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// DeleteTag - deleta uma tag específica
 func DeleteTag(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
@@ -119,5 +123,44 @@ func DeleteTag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSONMessage(w, http.StatusOK, "Tag deleted successfully")
+	response.JSONMessage(w, http.StatusOK, "Tag Deleted successfully")
+}
+
+// UpdateTag - atualiza uma tag
+func UpdateTag(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	ID, err := strconv.ParseUint(parameters["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	bodyRequest, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, err)
+	}
+
+	var tag models.Tag
+	if err = json.Unmarshal(bodyRequest, &tag); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+	}
+
+	db, err := db.Connect()
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.NewRepositoryByTag(db)
+	tag, err = repository.UpdateTag(ID, tag)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, tag)
+
 }

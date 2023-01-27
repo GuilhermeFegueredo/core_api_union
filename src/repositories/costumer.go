@@ -11,10 +11,12 @@ type Costumers struct {
 	db *sql.DB
 }
 
+// NewRepositoryByCostumer - cria novo repositorio do banco de dados
 func NewRepositoryByCostumer(db *sql.DB) *Costumers {
 	return &Costumers{db}
 }
 
+// GetCostumers - lista os customers do banco de dados
 func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
 	lines, err := repository.db.Query("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE C.status_id = 3")
 	if err != nil {
@@ -40,6 +42,7 @@ func (repository Costumers) GetCostumers() ([]models.Costumer, error) {
 	return costumers, nil
 }
 
+// GetCostumerByName - lista o customer pelo nome no banco
 func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, error) {
 	text := "%' AND C.status_id = 3"
 	query := fmt.Sprint("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE C.costumer_name LIKE '%", name, text)
@@ -70,6 +73,7 @@ func (repository Costumers) GetCostumerByName(name string) ([]models.Costumer, e
 	return costumers, nil
 }
 
+// GetCostumerByID - lista o customer pelo id 
 func (repository Costumers) GetCostumerByID(id uint64) (models.Costumer, error) {
 
 	stmt, err := repository.db.Prepare("SELECT C.costumer_id, C.costumer_name, S.status_description FROM tblCostumer C INNER JOIN tblStatus S ON C.status_id = S.status_id WHERE costumer_id = ? AND C.status_id = 3")
@@ -88,6 +92,7 @@ func (repository Costumers) GetCostumerByID(id uint64) (models.Costumer, error) 
 	return costumer, nil
 }
 
+// CreateCostumer - cria um novo customer no banco
 func (repository Costumers) CreateCostumer(costumer models.Costumer) (uint64, error) {
 	statement, erro := repository.db.Prepare(
 		"INSERT INTO tblCostumer (costumer_name, status_id) VALUES (?, 3)",
@@ -110,6 +115,7 @@ func (repository Costumers) CreateCostumer(costumer models.Costumer) (uint64, er
 	return uint64(LastInsertId), nil
 }
 
+// UpdateCostumer - atualiza o customer do banco
 func (repository Costumers) UpdateCostumer(id uint64, costumer models.Costumer) (models.Costumer, error) {
 	stmt, err := repository.db.Prepare(
 		"UPDATE tblCostumer SET costumer_name = ?, status_id = ? WHERE costumer_id = ?")
@@ -136,6 +142,7 @@ func (repository Costumers) UpdateCostumer(id uint64, costumer models.Costumer) 
 	return costumer, nil
 }
 
+// DeleteCostumer - deleta o customer do banco
 func (repository Costumers) DeleteCostumer(id uint64) (models.Costumer, error) {
 
 	stmt, err := repository.db.Prepare(

@@ -24,12 +24,12 @@ var routerTags = []Routes{
 		Function:        controllers.CreateTag,
 		IsAuthenticated: false,
 	},
-	// {
-	// 	URI:             "/tag/update/{id}",
-	// 	Method:          http.MethodPut,
-	// 	Function:        controllers.UpdateTag,
-	// 	IsAuthenticated: false,
-	// },
+	{
+		URI:             "/tag/update/{id}",
+		Method:          http.MethodPut,
+		Function:        controllers.UpdateTag,
+		IsAuthenticated: false,
+	},
 	{
 		URI:             "/tag/delete/{id}",
 		Method:          http.MethodDelete,
