@@ -5,13 +5,15 @@ import (
 	"errors"
 	"strings"
 	"time"
+
+	"github.com/badoux/checkmail"
 )
 
 type User struct {
 	User_ID    uint64    `json:"user_id,omitempty"`
 	Name       string    `json:"user_name,omitempty"`
 	Email      string    `json:"user_email,omitempty"`
-	Level      int       `json:"level,omitempty"`
+	Level      int       `json:"user_level,omitempty"`
 	Password   string    `json:"user_pwd,omitempty"`
 	Created_At time.Time `json:"created_at,omitempty"`
 	Status     `json:"status_id,omitempty"`
@@ -40,9 +42,13 @@ func (user *User) validate(stage string) error {
 		return errors.New("required email")
 	}
 
-	// if user.Level == 0 {
-	// 	return errors.New("required level")
-	// }
+	if err := checkmail.ValidateFormat(user.Email); err != nil {
+		return errors.New("invalid email")
+	}
+
+	if user.Level == 0 {
+		return errors.New("required level")
+	}
 
 	if user.Password == "" {
 		return errors.New("required password")
