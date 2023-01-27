@@ -62,22 +62,22 @@ func (repository Domain) GetDomainByID(ID uint64) (models.Domain, error) {
 
 // Criar insere um usuário no banco de dados
 func (repository Domain) CreateDomain(domain models.Domain) (uint64, error) {
-	statement, erro := repository.db.Prepare(
+	statement, err := repository.db.Prepare(
 		"insert into tblDomain (domain_name, domain_code, domain_value) values(?, ?, ?)",
 	)
-	if erro != nil {
-		return 0, erro
+	if err != nil {
+		return 0, err
 	}
 	defer statement.Close()
 
-	result, erro := statement.Exec(domain.Domain_name, domain.Domain_code, domain.Domain_value)
-	if erro != nil {
-		return 0, erro
+	result, err := statement.Exec(domain.Domain_name, domain.Domain_code, domain.Domain_value)
+	if err != nil {
+		return 0, err
 	}
 
-	LastInsertId, erro := result.LastInsertId()
-	if erro != nil {
-		return 0, erro
+	LastInsertId, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
 	}
 
 	return uint64(LastInsertId), nil
@@ -86,16 +86,16 @@ func (repository Domain) CreateDomain(domain models.Domain) (uint64, error) {
 
 // UpdateDomain atualiza as informações de um domain no banco de dados
 func (repository Domain) UpdateDomain(ID uint64, domain models.Domain) error {
-	statement, erro := repository.db.Prepare(
+	statement, err := repository.db.Prepare(
 		"update tblDomain set domain_name = ?, domain_value = ?, domain_code = ? where domain_id = ?",
 	)
-	if erro != nil {
-		return erro
+	if err != nil {
+		return err
 	}
 	defer statement.Close()
 
-	if _, erro = statement.Exec(domain.Domain_name, domain.Domain_value, domain.Domain_code, ID); erro != nil {
-		return erro
+	if _, err = statement.Exec(domain.Domain_name, domain.Domain_value, domain.Domain_code, ID); err != nil {
+		return err
 	}
 
 	return nil
@@ -103,14 +103,14 @@ func (repository Domain) UpdateDomain(ID uint64, domain models.Domain) error {
 
 // DeleteDomain exclui as informações de um domain no banco de dados
 func (repository Domain) DeleteDomain(ID uint64) error {
-	statement, erro := repository.db.Prepare("delete from tblDomain where domain_id = ?")
-	if erro != nil {
-		return erro
+	statement, err := repository.db.Prepare("delete from tblDomain where domain_id = ?")
+	if err != nil {
+		return err
 	}
 	defer statement.Close()
 
-	if _, erro = statement.Exec(ID); erro != nil {
-		return erro
+	if _, err = statement.Exec(ID); err != nil {
+		return err
 	}
 
 	return nil

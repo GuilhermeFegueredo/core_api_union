@@ -33,22 +33,22 @@ func (user *User) Prepare(stage string) error {
 
 func (user *User) validate(stage string) error {
 	if user.Name == "" {
-		return errors.New("Required name")
+		return errors.New("required name")
 	}
 
 	if user.Email == "" {
-		return errors.New("Required email")
+		return errors.New("required email")
 	}
 
 	// if user.Level == 0 {
-	// 	return errors.New("Required level")
+	// 	return errors.New("required level")
 	// }
 
 	if user.Password == "" {
-		return errors.New("Required password")
+		return errors.New("required password")
 	}
 	if user.Status_ID == 0 {
-		return errors.New("Required status")
+		return errors.New("required status")
 	}
 
 	return nil
@@ -62,7 +62,7 @@ func (user *User) format(stage string) error {
 
 		passwordHash, err := security.HashPassword(user.Password)
 		if err != nil {
-			return errors.New("Error to encrypt password")
+			return errors.New("error to encrypt password")
 
 		}
 

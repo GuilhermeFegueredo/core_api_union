@@ -11,29 +11,29 @@ import (
 
 var (
 	// StringConexao é a string de conexão com o MySQL
-	StringConexaoBanco = ""
+	DNS = ""
 
-	// Porta onde a API vai estar rodando
-	Porta = 0
+	// Port onde a API vai estar rodando
+	Port = 0
 
 	// SecretKey é a chave que vai assinar o token
 	SecretKey []byte
 )
 
-// Carregar vai inicializar as variaveis de ambiente
-func Carregar() {
-	var erro error
+// Load vai inicializar as variaveis de ambiente
+func Load() {
+	var err error
 
-	if erro = godotenv.Load(); erro != nil {
-		log.Fatal(erro)
+	if err = godotenv.Load(); err != nil {
+		log.Fatal(err)
 	}
 
-	Porta, erro = strconv.Atoi(os.Getenv("API_PORT"))
-	if erro != nil {
-		Porta = 9000
+	Port, err = strconv.Atoi(os.Getenv("API_PORT"))
+	if err != nil {
+		Port = 9000
 	}
 
-	StringConexaoBanco = fmt.Sprintf("%s:%s@tcp(%s)/%s",
+	DNS = fmt.Sprintf("%s:%s@tcp(%s)/%s",
 		os.Getenv("DB_USUARIO"),
 		os.Getenv("DB_SENHA"),
 		os.Getenv("DB_HOSTNAME"),

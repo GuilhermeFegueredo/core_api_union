@@ -2,7 +2,7 @@ package main
 
 import (
 	"core_APIUnion/src/config"
-	"core_APIUnion/src/router"
+	"core_APIUnion/src/routes"
 	"fmt"
 	"log"
 	"net/http"
@@ -22,9 +22,9 @@ func main() {
 		}
 		secret()
 	*/
-	config.Carregar()
-	r := router.Gerar()
+	config.Load()
+	r := routes.Generate()
 
-	fmt.Printf("Escutando na porta %d: ", config.Porta)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Porta), r))
+	fmt.Printf("Escutando na porta %d: ", config.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
 }

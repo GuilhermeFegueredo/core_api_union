@@ -1,4 +1,4 @@
-package rotas
+package routes
 
 import (
 	"net/http"
@@ -15,15 +15,15 @@ type Routes struct {
 }
 
 // Configurar coloca todas as rotas dentro do router
-func Configurar(r *mux.Router) *mux.Router {
-	routers := routerTags
-	routers = append(routers, routerDomain...)
-	routers = append(routers, routerStatus...)
-	routers = append(routers, routerLogin...)
-	routers = append(routers, routerCostumer...)
-	routers = append(routers, RouterUser...)
+func Config(r *mux.Router) *mux.Router {
+	routes := routerTags
+	routes = append(routes, routerDomain...)
+	routes = append(routes, routerStatus...)
+	routes = append(routes, routerLogin...)
+	routes = append(routes, routerCostumer...)
+	routes = append(routes, RouterUser...)
 
-	for _, router := range routers {
+	for _, router := range routes {
 		r.HandleFunc(router.URI, router.Function).Methods(router.Method)
 	}
 

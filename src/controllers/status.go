@@ -14,13 +14,13 @@ import (
 func GetStatusById(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
-	status_id, err := strconv.ParseUint(parameters["id"], 10, 64)
+	id, err := strconv.ParseUint(parameters["id"], 10, 64)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -29,7 +29,7 @@ func GetStatusById(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByStatus(db)
-	status, err := repository.GetStatusById(status_id)
+	status, err := repository.GetStatusById(id)
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return

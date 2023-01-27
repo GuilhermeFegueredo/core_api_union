@@ -30,7 +30,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 
@@ -51,7 +51,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	owner := strings.ToLower(r.URL.Query().Get("owner"))
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -71,13 +71,13 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
-	userID, err := strconv.ParseUint(parameters["ID"], 10, 64)
+	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -96,7 +96,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	userID, err := strconv.ParseUint(parameters["ID"], 10, 64)
+	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 		return
@@ -119,7 +119,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -132,18 +132,18 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSON(w, http.StatusNoContent, nil)
+	response.JSONMessage(w, http.StatusNoContent, "user updated successfully")
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	userID, err := strconv.ParseUint(parameters["ID"], 10, 64)
+	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -156,5 +156,5 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSON(w, http.StatusNoContent, nil)
+	response.JSON(w, http.StatusNoContent, "user deleted successfully")
 }

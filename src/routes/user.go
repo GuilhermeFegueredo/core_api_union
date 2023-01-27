@@ -1,4 +1,4 @@
-package rotas
+package routes
 
 import (
 	"core_APIUnion/src/controllers"
@@ -13,25 +13,25 @@ var RouterUser = []Routes{
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/users/{ID}",
+		URI:             "/user/{id}",
 		Method:          http.MethodGet,
 		Function:        controllers.GetUser,
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/users",
+		URI:             "/user",
 		Method:          http.MethodPost,
 		Function:        controllers.CreateUser,
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/users/{ID}",
+		URI:             "/user/update/{id}",
 		Method:          http.MethodPut,
 		Function:        controllers.UpdateUser,
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/users/{ID}",
+		URI:             "/user/delete/{id}",
 		Method:          http.MethodDelete,
 		Function:        controllers.DeleteUser,
 		IsAuthenticated: false,
