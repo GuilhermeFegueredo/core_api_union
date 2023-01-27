@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetCostumers - lista todos os customers ativos
 func GetCostumers(w http.ResponseWriter, r *http.Request) {
 	db, err := db.Connect()
 	if err != nil {
@@ -37,6 +38,7 @@ func GetCostumers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetCostumerByName - lista os customers ativos pelo nome
 func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
 	costumerName := parametros["name"]
@@ -64,6 +66,7 @@ func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, costumer)
 }
 
+// GetCostumerByID - lista os customers ativos pelo ID
 func GetCostumerByID(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
@@ -91,6 +94,7 @@ func GetCostumerByID(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, costumer)
 }
 
+// CreateCostumer - Cria o customer 
 func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -137,6 +141,7 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, costumer)
 }
 
+// UpdateCostumer - Altera dados do customer
 func UpdateCostumer(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
 	costumer_id, err := strconv.ParseUint(parametros["id"], 10, 64)
@@ -179,6 +184,7 @@ func UpdateCostumer(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, costumer)
 }
 
+// DeleteCostumer - soft delete no customer
 func DeleteCostumer(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 

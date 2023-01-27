@@ -9,10 +9,12 @@ type Tags struct {
 	db *sql.DB
 }
 
+// NewRepositoryByTag - cria novo repositorio da tag
 func NewRepositoryByTag(db *sql.DB) *Tags {
 	return &Tags{db}
 }
 
+// GetTags - lista as tags do banco de dados
 func (repository Tags) GetTags() ([]models.Tag, error) {
 	lines, err := repository.db.Query("SELECT T.tag_id, T.tag_name, D.domain_value FROM tblTags T INNER JOIN tblDomain D ON T.tag_type = D.domain_id")
 	if err != nil {
@@ -37,6 +39,7 @@ func (repository Tags) GetTags() ([]models.Tag, error) {
 
 }
 
+// GetTag - lista uma tag específica do banco
 func (repository Tags) GetTag(ID uint64) (models.Tag, error) {
 
 	stmt, err := repository.db.Prepare("SELECT T.tag_id, T.tag_name, D.domain_value FROM tblTags T INNER JOIN tblDomain D ON T.tag_type = D.domain_id WHERE T.tag_id = ?")
@@ -55,6 +58,7 @@ func (repository Tags) GetTag(ID uint64) (models.Tag, error) {
 	return tag, nil
 }
 
+// CreateTag - cria uma tag nova no banco
 func (repository Tags) CreateTag(tag models.Tag) (uint64, error) {
 	stmt, err := repository.db.Prepare("INSERT INTO tblTags (tag_name, tag_type) VALUES(?, ?)")
 	if err != nil {
@@ -75,6 +79,7 @@ func (repository Tags) CreateTag(tag models.Tag) (uint64, error) {
 	return uint64(LastInsertId), nil
 }
 
+// DeleteTag - deleta alguma tag específica do banco // Modificar para soft delete
 func (repository Tags) DeleteTag(ID uint64) error {
 	stmt, err := repository.db.Prepare("DELETE FROM tblTags WHERE tag_id = ?")
 	if err != nil {
@@ -88,4 +93,31 @@ func (repository Tags) DeleteTag(ID uint64) error {
 	}
 
 	return nil
+}
+
+// UpdateTag - atualiza uma tag específica do banco
+func (repository Tags) UpdateTag(id uint64, tag models.Tag) (models.Tag, error) {
+	stmt, err := repository.db.Prepare(
+		"UPDATE tblTags SET tag_name = ?, tag_type = ? WHERE tag_id = ?")
+	if err != nil {
+		return models.Tag{}, err
+	}
+
+	if _, err = stmt.Exec(tag.Tag_Name, tag.Domain_ID, id); err != nil {
+		return models.Tag{}, err
+	}
+	defer stmt.Close()
+
+	stmt, err = repository.db.Prepare("SELECT T.tag_id, T.tag_name, D.domain_value FROM tblTags T INNER JOIN tblDomain D ON T.tag_type = D.domain_id WHERE T.tag_id = ?")
+	if err != nil {
+		return models.Tag{}, err
+	}
+
+	err = stmt.QueryRow(id).Scan(&tag.Tag_ID, &tag.Tag_Name, &tag.Domain_value)
+
+	if err != nil {
+		return models.Tag{}, err
+	}
+
+	return tag, nil
 }

@@ -12,12 +12,14 @@ type Domain struct {
 	db *sql.DB
 }
 
-// NewRepositoryByDomain cria um novo repositorio de domain
+
+// NewRepositoryByDomain - cria novo repositorio do banco de dados
 func NewRepositoryByDomain(db *sql.DB) *Domain {
 	return &Domain{db}
 }
 
-// GetDomain retorna um domain por nome do banco de dados
+
+// GetDomainByName - lista domain por nome do banco de dados
 func (repository Domain) GetDomainByName(name string) ([]models.Domain, error) {
 	Domainame := strings.ToUpper(fmt.Sprintf("%%%s%%", name))
 
@@ -43,7 +45,8 @@ func (repository Domain) GetDomainByName(name string) ([]models.Domain, error) {
 	return domains, nil
 }
 
-// GetDomainByID retorna um domain do banco de dados pelo id
+
+// GetCostumers - busca domain por id do banco de dados
 func (repository Domain) GetDomainByID(ID uint64) (models.Domain, error) {
 	stmt, err := repository.db.Prepare("SELECT domain_value FROM tblDomain WHERE domain_id = ?")
 	if err != nil {
@@ -63,7 +66,7 @@ func (repository Domain) GetDomainByID(ID uint64) (models.Domain, error) {
 
 }
 
-// Criar insere um usuário no banco de dados
+// CreateDomain - insere um usuário no banco de dados
 func (repository Domain) CreateDomain(domain models.Domain) (uint64, error) {
 	statement, err := repository.db.Prepare(
 		"insert into tblDomain (domain_name, domain_code, domain_value) values(?, ?, ?)",
@@ -87,7 +90,7 @@ func (repository Domain) CreateDomain(domain models.Domain) (uint64, error) {
 
 }
 
-// UpdateDomain atualiza as informações de um domain no banco de dados
+// UpdateDomain - atualiza as informações de um domain no banco de dados
 func (repository Domain) UpdateDomain(ID uint64, domain models.Domain) error {
 	statement, err := repository.db.Prepare(
 		"update tblDomain set domain_name = ?, domain_value = ?, domain_code = ? where domain_id = ?",
@@ -104,7 +107,7 @@ func (repository Domain) UpdateDomain(ID uint64, domain models.Domain) error {
 	return nil
 }
 
-// DeleteDomain exclui as informações de um domain no banco de dados
+// DeleteDomain - exclui as informações de um domain no banco de dados
 func (repository Domain) DeleteDomain(ID uint64) error {
 	statement, err := repository.db.Prepare("delete from tblDomain where domain_id = ?")
 	if err != nil {
