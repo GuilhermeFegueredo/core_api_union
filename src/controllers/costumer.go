@@ -105,6 +105,8 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	costumer.Status_ID = 3
+
 	if erro = costumer.Prepare(); erro != nil {
 		response.Erro(w, http.StatusBadRequest, erro)
 		return
