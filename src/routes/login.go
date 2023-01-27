@@ -1,4 +1,4 @@
-package rotas
+package routes
 
 import (
 	"core_APIUnion/src/controllers"

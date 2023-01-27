@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"core_APIUnion/src/auth"
 	"core_APIUnion/src/db"
+	"core_APIUnion/src/middleware/auth"
 	"core_APIUnion/src/models"
 	"core_APIUnion/src/repositories"
 	"core_APIUnion/src/response"
@@ -25,7 +25,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return

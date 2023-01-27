@@ -5,17 +5,16 @@ import (
 	"database/sql"
 )
 
-// Os repositórios de pacotes fornecem uma interface para a tabela Status no banco de dados.
 type Status struct {
 	db *sql.DB
 }
 
-// O pacote contém o construtor NewRepositoryByStatus(), que usa um ponteiro sql.DB como argumento,
+// NewRepositoryByStatus() constrói uma estrutura de db que usa um ponteiro sql.DB como argumento
 func NewRepositoryByStatus(db *sql.DB) *Status {
 	return &Status{db}
 }
 
-// O método GetStatusById() recebe um id uint64 como argumento e retorna uma estrutura models.Status
+// GetStatusById() recebe um id uint64 como argumento e retorna uma estrutura models.Status
 func (repository Status) GetStatusById(id uint64) (models.Status, error) {
 
 	stmt, err := repository.db.Prepare("SELECT * FROM tblStatus WHERE status_id = ? ")

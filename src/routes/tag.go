@@ -1,4 +1,4 @@
-package rotas
+package routes
 
 import (
 	"core_APIUnion/src/controllers"
@@ -13,25 +13,25 @@ var routerTags = []Routes{
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/tags/{ID}",
+		URI:             "/tag/{id}",
 		Method:          http.MethodGet,
 		Function:        controllers.GetTag,
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/tags",
+		URI:             "/tag",
 		Method:          http.MethodPost,
 		Function:        controllers.CreateTag,
 		IsAuthenticated: false,
 	},
 	// {
-	// 	URI:             "/tags",
+	// 	URI:             "/tag/update/{id}",
 	// 	Method:          http.MethodPut,
 	// 	Function:        controllers.UpdateTag,
 	// 	IsAuthenticated: false,
 	// },
 	{
-		URI:             "/tags/{ID}",
+		URI:             "/tag/delete/{id}",
 		Method:          http.MethodDelete,
 		Function:        controllers.DeleteTag,
 		IsAuthenticated: false,

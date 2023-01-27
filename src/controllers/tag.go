@@ -7,7 +7,6 @@ import (
 	"core_APIUnion/src/response"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -15,9 +14,9 @@ import (
 )
 
 func GetTags(w http.ResponseWriter, r *http.Request) {
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
-		log.Fatal("Error connecting to database") // Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -26,13 +25,13 @@ func GetTags(w http.ResponseWriter, r *http.Request) {
 	repository := repositories.NewRepositoryByTag(db)
 	tags, err := repository.GetTags()
 	if err != nil {
-		log.Fatal("Error fetching tags") // Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(tags)
 	if err != nil {
-		log.Fatal("Error convert json") // Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 }
@@ -40,13 +39,13 @@ func GetTags(w http.ResponseWriter, r *http.Request) {
 func GetTag(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
-	ID, err := strconv.ParseUint(parameters["ID"], 10, 32)
+	ID, err := strconv.ParseUint(parameters["id"], 10, 32)
 	if err != nil {
 		response.Erro(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -80,10 +79,9 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
-		w.Write([]byte("Error connecting to database"))
-		// Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 	defer db.Close()
@@ -101,13 +99,13 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 func DeleteTag(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
-	ID, err := strconv.ParseUint(parameters["ID"], 10, 32)
+	ID, err := strconv.ParseUint(parameters["id"], 10, 32)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -121,5 +119,5 @@ func DeleteTag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSON(w, http.StatusOK, map[string]string{"message": "Tag deleted successfully"})
+	response.JSONMessage(w, http.StatusOK, "Tag deleted successfully")
 }

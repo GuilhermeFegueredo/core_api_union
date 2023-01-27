@@ -15,7 +15,7 @@ import (
 )
 
 func GetDomainByName(w http.ResponseWriter, r *http.Request) {
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -40,24 +40,24 @@ func GetDomainByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateDomain(w http.ResponseWriter, r *http.Request) {
-	bodyRequest, erro := ioutil.ReadAll(r.Body)
-	if erro != nil {
-		response.Erro(w, http.StatusUnprocessableEntity, erro)
+	bodyRequest, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
 	var domain models.Domain
-	if erro = json.Unmarshal(bodyRequest, &domain); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = json.Unmarshal(bodyRequest, &domain); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	if erro = domain.Prepare(); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = domain.Prepare(); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -66,9 +66,9 @@ func CreateDomain(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByDomain(db)
-	domain.Domain_ID, erro = repository.CreateDomain(domain)
-	if erro != nil {
-		response.Erro(w, http.StatusInternalServerError, erro)
+	domain.Domain_ID, err = repository.CreateDomain(domain)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -78,30 +78,30 @@ func CreateDomain(w http.ResponseWriter, r *http.Request) {
 // UpdateDomain altera as informações de um domain no banco
 func UpdateDomain(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	domain_ID, erro := strconv.ParseUint(parameters["domain_id"], 10, 64)
-	if erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	domain_ID, err := strconv.ParseUint(parameters["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	bodyRequest, erro := ioutil.ReadAll(r.Body)
-	if erro != nil {
-		response.Erro(w, http.StatusUnprocessableEntity, erro)
+	bodyRequest, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
 	var domain models.Domain
-	if erro = json.Unmarshal(bodyRequest, &domain); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = json.Unmarshal(bodyRequest, &domain); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	if erro = domain.Prepare(); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = domain.Prepare(); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, erro := db.Conectar()
+	db, erro := db.Connect()
 	if erro != nil {
 		response.Erro(w, http.StatusInternalServerError, erro)
 		return
@@ -109,9 +109,9 @@ func UpdateDomain(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByDomain(db)
-	erro = repository.UpdateDomain(domain_ID, domain)
-	if erro != nil {
-		response.Erro(w, http.StatusInternalServerError, erro)
+	err = repository.UpdateDomain(domain_ID, domain)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -121,24 +121,24 @@ func UpdateDomain(w http.ResponseWriter, r *http.Request) {
 
 func DeleteDomain(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	domain_ID, erro := strconv.ParseUint(parameters["domain_id"], 10, 64)
-	if erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	domain_ID, err := strconv.ParseUint(parameters["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, erro := db.Conectar()
-	if erro != nil {
-		response.Erro(w, http.StatusInternalServerError, erro)
+	db, err := db.Connect()
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByDomain(db)
-	if erro = repository.DeleteDomain(domain_ID); erro != nil {
-		response.Erro(w, http.StatusInternalServerError, erro)
+	if err = repository.DeleteDomain(domain_ID); err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.JSONmessage(w, http.StatusOK, "domain successfully deleted")
+	response.JSONMessage(w, http.StatusOK, "domain successfully deleted")
 }

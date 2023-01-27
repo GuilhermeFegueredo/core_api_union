@@ -1,4 +1,4 @@
-package rotas
+package routes
 
 import (
 	"core_APIUnion/src/controllers"
@@ -7,7 +7,7 @@ import (
 
 var routerCostumer = []Routes{
 	{
-		URI:             "/costumer",
+		URI:             "/costumers",
 		Method:          http.MethodGet,
 		Function:        controllers.GetCostumers,
 		IsAuthenticated: false,

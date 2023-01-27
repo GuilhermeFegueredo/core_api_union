@@ -7,16 +7,16 @@ import (
 	_ "github.com/go-sql-driver/mysql" // Driver
 )
 
-// Conectar abre a conexão com o banco de dados
-func Conectar() (*sql.DB, error) {
-	db, erro := sql.Open("mysql", config.StringConexaoBanco)
-	if erro != nil {
-		return nil, erro
+// Connect abre a conexão com o banco de dados
+func Connect() (*sql.DB, error) {
+	db, err := sql.Open("mysql", config.DNS)
+	if err != nil {
+		return nil, err
 	}
 
-	if erro = db.Ping(); erro != nil {
+	if err = db.Ping(); err != nil {
 		db.Close()
-		return nil, erro
+		return nil, err
 	}
 
 	return db, nil

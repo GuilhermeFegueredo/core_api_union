@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -16,9 +15,9 @@ import (
 )
 
 func GetCostumers(w http.ResponseWriter, r *http.Request) {
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
-		log.Fatal("Error connecting to database") // Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -27,13 +26,13 @@ func GetCostumers(w http.ResponseWriter, r *http.Request) {
 	repository := repositories.NewRepositoryByCostumer(db)
 	costumers, err := repository.GetCostumers()
 	if err != nil {
-		log.Fatal("Error fetching costumers") // Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(costumers)
 	if err != nil {
-		log.Fatal("Error convert json") // Aqui entrará o sistema de respostas
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 }
@@ -42,7 +41,7 @@ func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
 	costumerName := parametros["name"]
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -58,7 +57,7 @@ func GetCostumerByName(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if costumer == nil {
-		response.Erro(w, http.StatusNotFound, errors.New("Costumer not found"))
+		response.Erro(w, http.StatusNotFound, errors.New("costumer not found"))
 		return
 	}
 
@@ -74,7 +73,7 @@ func GetCostumerByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -93,24 +92,24 @@ func GetCostumerByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateCostumer(w http.ResponseWriter, r *http.Request) {
-	bodyRequest, erro := ioutil.ReadAll(r.Body)
-	if erro != nil {
-		response.Erro(w, http.StatusUnprocessableEntity, erro)
+	bodyRequest, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
 	var costumer models.Costumer
-	if erro = json.Unmarshal(bodyRequest, &costumer); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = json.Unmarshal(bodyRequest, &costumer); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	if erro = costumer.Prepare(); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = costumer.Prepare(); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -119,13 +118,13 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByCostumer(db)
-	costumer.Costumer_ID, erro = repository.CreateCostumer(costumer)
-	if erro != nil {
-		response.Erro(w, http.StatusInternalServerError, erro)
+	costumer.Costumer_ID, err = repository.CreateCostumer(costumer)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	costumer, erro = repository.GetCostumerByID(costumer.Costumer_ID)
+	costumer, err = repository.GetCostumerByID(costumer.Costumer_ID)
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -136,30 +135,30 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 
 func UpdateCostumer(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
-	costumer_id, erro := strconv.ParseUint(parametros["id"], 10, 64)
-	if erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	costumer_id, err := strconv.ParseUint(parametros["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	bodyRequest, erro := ioutil.ReadAll(r.Body)
-	if erro != nil {
-		response.Erro(w, http.StatusUnprocessableEntity, erro)
+	bodyRequest, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
 	var costumer models.Costumer
-	if erro = json.Unmarshal(bodyRequest, &costumer); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = json.Unmarshal(bodyRequest, &costumer); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	if erro = costumer.Prepare(); erro != nil {
-		response.Erro(w, http.StatusBadRequest, erro)
+	if err = costumer.Prepare(); err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, erro := db.Conectar()
+	db, erro := db.Connect()
 	if erro != nil {
 		response.Erro(w, http.StatusInternalServerError, erro)
 		return
@@ -167,9 +166,9 @@ func UpdateCostumer(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByCostumer(db)
-	costumer, erro = repository.UpdateCostumer(costumer_id, costumer)
-	if erro != nil {
-		response.Erro(w, http.StatusInternalServerError, erro)
+	costumer, err = repository.UpdateCostumer(costumer_id, costumer)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -179,13 +178,13 @@ func UpdateCostumer(w http.ResponseWriter, r *http.Request) {
 func DeleteCostumer(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
-	costumer_id, err := strconv.ParseUint(parameters["id"], 10, 64)
+	id, err := strconv.ParseUint(parameters["id"], 10, 64)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 		return
 	}
 
-	db, err := db.Conectar()
+	db, err := db.Connect()
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -194,7 +193,7 @@ func DeleteCostumer(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repository := repositories.NewRepositoryByCostumer(db)
-	costumer, err := repository.DeleteCostumer(costumer_id)
+	costumer, err := repository.DeleteCostumer(id)
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return

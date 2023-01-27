@@ -1,4 +1,4 @@
-package rotas
+package routes
 
 import (
 	"core_APIUnion/src/controllers"
@@ -19,13 +19,13 @@ var routerDomain = []Routes{
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/domain/{domain_id}",
+		URI:             "/domain/{id}",
 		Method:          http.MethodPut,
 		Function:        controllers.UpdateDomain,
 		IsAuthenticated: false,
 	},
 	{
-		URI:             "/domain/{domain_id}",
+		URI:             "/domain/{id}",
 		Method:          http.MethodDelete,
 		Function:        controllers.DeleteDomain,
 		IsAuthenticated: false,
