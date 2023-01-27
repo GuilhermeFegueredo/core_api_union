@@ -104,8 +104,12 @@ func CreateCostumer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+
 	if err = costumer.Prepare(); err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
+
+	costumer.Status_ID = 3
+
 		return
 	}
 
